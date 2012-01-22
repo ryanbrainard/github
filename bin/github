@@ -1,7 +1,9 @@
 #!/bin/bash
 
 originPrefix="github/"
-myUser="rbrainard"
+myUser=$(git config github.user 2> /dev/null)
+
+[ -z ${myUser} ] && echo "Must set value for github.user in git config" && exit 1
 
 clone() {
   url=${1?"Must provide URL"}
@@ -28,6 +30,8 @@ clone() {
 }
 
 ###
+
+[ ${#} == 0 ] && echo "Must provide a subcommand" && exit 1
 
 cmd=${1}
 shift
