@@ -1,0 +1,35 @@
+#!/bin/bash
+
+originPrefix="github/"
+myUser="rbrainard"
+
+clone() {
+  url=${1?"Must provide URL"}
+  urlPattern=".*github.com[:\/](.+)\/(.+)\.git"
+  user=$(echo "${url}" | sed -E "s/${urlPattern}/\1/")
+  repo=$(echo "${url}" | sed -E "s/${urlPattern}/\2/")
+  
+  [ ${user} == ${repo} ] && echo "Invalid GitHub URL: ${url}" && exit 1
+
+  customOrigin="${originPrefix}${user}"
+  cloneCmd="git clone -o ${customOrigin} ${url}"
+  echo "Executing: ${cloneCmd}"
+  ${cloneCmd} 
+
+  cd ${repo}
+
+  if [ ${user} != ${myUser} ]; then
+    myForkUrl=$(echo "${url}" | sed -E "s/${urlPattern}/git@github.com:${myUser}\/${repo}.git/")
+    addMyForkCmd="git remote add ${originPrefix}${myUser} ${myForkUrl}"
+    echo "Adding a remote repo configuration for your own fork of this repo. Ensure this fork actually exists on GitHub before interacting with it."
+    echo "Executing: ${addMyForkCmd}"
+    ${addMyForkCmd}
+  fi
+}
+
+###
+
+cmd=${1}
+shift
+
+$cmd ${@}
