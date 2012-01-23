@@ -1,17 +1,26 @@
 #!/bin/bash
 
-originPrefix="github/"
 myUser=$(git config github.user 2> /dev/null)
-
-[ -z ${myUser} ] && echo "Must set value for github.user in git config" && exit 1
+while [ -z ${myUser} ]; do
+  read -p "Enter your GitHub username: " myUser
+  git config --global --add github.user $myUser 2> /dev/null
+done
 
 clone() {
   url=${1?"Must provide URL"}
-  urlPattern=".*github.com[:\/](.+)\/(.+)\.git"
+  urlPattern=".*github.com[:\/](.+)\/(.+)(\.git)?"
   user=$(echo "${url}" | sed -E "s/${urlPattern}/\1/")
   repo=$(echo "${url}" | sed -E "s/${urlPattern}/\2/")
   
   [ ${user} == ${repo} ] && echo "Invalid GitHub URL: ${url}" && exit 1
+
+  originPrefix="$(git config github.originPrefix)"
+  while [ -z ${originPrefix} ]; do
+    defaultOriginPrefix="github/"
+    read -p "Enter origin prefix [ ${defaultOriginPrefix} ]:" originPrefix
+    originPrefix=${originPrefix:-${defaultOriginPrefix}}
+    git config --global --add github.originPrefix ${originPrefix} 2> /dev/null
+  done
 
   customOrigin="${originPrefix}${user}"
   cloneCmd="git clone -o ${customOrigin} ${url}"
@@ -31,7 +40,7 @@ clone() {
 
 ###
 
-[ ${#} == 0 ] && echo "Must provide a subcommand" && exit 1
+[ ${#} == 0 ] && echo "Must provide a GitHub command. Currently, 'clone' is the only one available." && exit 1
 
 cmd=${1}
 shift

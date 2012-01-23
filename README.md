@@ -4,15 +4,14 @@ Setup
 =====
 1. Clone this repo
 
-    git clone git@github.com:rbrainard/github.git
+    `git clone git@github.com:rbrainard/github.git`
 
 2. Create a symlink to the script in `bin/github` :
 
-    ln -s <base_dir>/github/bin/github /usr/local/bin/github
+    `ln -s <base_dir>/github/bin/github /usr/local/bin/github`
 
-3. Configure your GitHub user:
+3. The first time you run this script, you will be prompted for additional configuration.
 
-    git config --global github.user <your_github_username>
 
 Commands
 ========
