@@ -27,6 +27,9 @@ repo, the script will automatically add a remote with the name `github/<your_git
 This does not actually setup the fork on GitHub, but saves you thr trouble of the local configuration
 if you already have a fork or plan to create one in the future. 
 
+The origin prefix defaults to `github/`, but can be customized if you want something different, such as `origin-`.
+You are prompted for the prefix on first run, but can be changed later by setting the git config `github.originPrefix`.
+
 Usage:
     
     github clone <git_url>
